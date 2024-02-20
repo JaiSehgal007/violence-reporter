@@ -1,6 +1,6 @@
 # Public Violence Detection and Reporting System
 
-This repository contains a machine learning project aimed at detecting violence in public places in real-time and reporting it. The project utilizes transfer learning techniques, leveraging the ResNet50 model for human detection, trained on a dataset sourced from Kaggle, specifically the [Real-Life Violence Situations Dataset](https://www.kaggle.com/datasets/mohamedmustafa/real-life-violence-situations-dataset). The model has been trained on 200 videos extracted from this dataset.
+This repository contains a machine learning project aimed at detecting violence in public places in real-time and reporting it. The project utilizes transfer learning techniques, leveraging the MobileNetV2 model for human detection, trained on a dataset sourced from Kaggle, specifically the [Real-Life Violence Situations Dataset](https://www.kaggle.com/datasets/mohamedmustafa/real-life-violence-situations-dataset). The model has been trained on 2000 videos extracted from this dataset.
 
 ## Features
 
