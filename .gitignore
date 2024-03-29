@@ -3,3 +3,6 @@ Dataset
 *.npy
 *.txt
 .env
+firebaseKey.json
+faces.png
+finalImage.jpg
