@@ -13,21 +13,44 @@ This repository contains a machine learning project aimed at detecting violence 
 
 - **Location Detection and Reporting**: Integration of location detection to report incidents to the nearest police station.
 
-## Installation
+## How to run?
+### STEPS:
 
-1. Clone the repository:
+Clone the repository
 
 ```bash
-    git clone https://github.com/your-username/violence-detection.git
+    git clone https://github.com/JaiSehgal007/violence-detection.git
 ```
 
-2. Install the required dependencies:
+### STEP 01- Create a conda environment after opening the repository
+
+```bash
+conda create -n reporter python=3.9
+```
+
+```bash
+conda activate reporter
+```
+
+```bash
+conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1.0
+```
+
+### STEP 02- install the requirements
+```bash
+pip install -r requirements.txt
+```
+
+```bash
+# Finally run the following command
+python main.py
+```
 
 3. Obtain API keys for Telegram and Firebase and configure them in the appropriate configuration files.
 
 ## Usage
 
-1. Run the ViolenceAlertSystem Jupyter noebook after installing all the necessary dependencies
+1. Run the main.py after installing all the necessary dependencies
 
 2. The system will start monitoring using the primary web camera of your device.
 
