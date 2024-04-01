@@ -171,6 +171,6 @@ setup.txt
 artifacts/*
 
 # dvc files
-.dvc
-dvc.lock
-.dvcignore
+# .dvc
+# dvc.lock
+# .dvcignore

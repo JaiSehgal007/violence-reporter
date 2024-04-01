@@ -4,6 +4,7 @@ from keras.layers import *
 from keras.models import Sequential
 from keras.applications.mobilenet_v2 import MobileNetV2
 from violenceReporter.entity import PrepareBaseModelConfig
+from pathlib import Path
 
 class PrepareBaseModel:
     def __init__(self,config:PrepareBaseModelConfig):

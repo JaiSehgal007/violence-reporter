@@ -1,0 +1,145 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/violenceReporter/pipeline/stage_01_data_ingestion.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 28492639089bcb1139ac05dfb5ead26f
+      size: 1225
+    - path: src/violenceReporter/pipeline/stage_01_data_ingestion.py
+      hash: md5
+      md5: 293e7ac01dfd5d09880e99b30154bb91
+      size: 933
+    outs:
+    - path: artifacts/data_ingestion/Dataset
+      hash: md5
+      md5: b90cfaf0b5e24bb1c4edde6d5fef9d0f.dir
+      size: 682794607
+      nfiles: 700
+  data_transformation:
+    cmd: python src/violenceReporter/pipeline/stage_02_data_transformation.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 28492639089bcb1139ac05dfb5ead26f
+      size: 1225
+    - path: src/violenceReporter/pipeline/stage_02_data_transformation.py
+      hash: md5
+      md5: cd21b18a58d9a5a47fb91778fe5e98cf
+      size: 943
+    params:
+      params.yaml:
+        IMAGE_HEIGHT: 64
+        IMAGE_WIDTH: 64
+        SEQUENCE_LENGTH: 16
+    outs:
+    - path: artifacts/data_transformation
+      hash: md5
+      md5: 58d76f7182e7a3a66d0e37a8361dfcda.dir
+      size: 1101161984
+      nfiles: 3
+  prepare_base_model:
+    cmd: python src/violenceReporter/pipeline/stage_03_prepare_base_model.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 28492639089bcb1139ac05dfb5ead26f
+      size: 1225
+    - path: src/violenceReporter/pipeline/stage_03_prepare_base_model.py
+      hash: md5
+      md5: 93c5aed37cebd3cdb84e9952e3ef6146
+      size: 1021
+    params:
+      params.yaml:
+        CLASSES: 2
+        FREEZE_TILL: -40
+        IMAGE_HEIGHT: 64
+        IMAGE_WIDTH: 64
+        INCLUDE_TOP: false
+        SEQUENCE_LENGTH: 16
+        TRAINABLE: true
+        WEIGHTS: imagenet
+    outs:
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: deba9a44c7e4b9dd7f9b64a892dbd33f.dir
+      size: 24385304
+      nfiles: 2
+  training:
+    cmd: python src/violenceReporter/pipeline/stage_04_model_training.py
+    deps:
+    - path: artifacts/data_ingestion/Dataset
+      hash: md5
+      md5: b90cfaf0b5e24bb1c4edde6d5fef9d0f.dir
+      size: 682794607
+      nfiles: 700
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: deba9a44c7e4b9dd7f9b64a892dbd33f.dir
+      size: 24385304
+      nfiles: 2
+    - path: config/config.yaml
+      hash: md5
+      md5: 28492639089bcb1139ac05dfb5ead26f
+      size: 1225
+    - path: src/violenceReporter/pipeline/stage_04_model_training.py
+      hash: md5
+      md5: 3fc640fc103a714d1f1f0ea25a2993f3
+      size: 900
+    params:
+      params.yaml:
+        BATCH_SIZE: 8
+        EPOCHS: 100
+        IMAGE_HEIGHT: 64
+        IMAGE_WIDTH: 64
+        TEST_SIZE: 0.1
+    outs:
+    - path: artifacts/training
+      hash: md5
+      md5: e9f3909a6091661c679edd5bdf69e7b4.dir
+      size: 29771438
+      nfiles: 4
+  evaluation:
+    cmd: python src/violenceReporter/pipeline/stage_05_model_evaluation.py
+    deps:
+    - path: artifacts/data_ingestion/Dataset
+      hash: md5
+      md5: b90cfaf0b5e24bb1c4edde6d5fef9d0f.dir
+      size: 682794607
+      nfiles: 700
+    - path: artifacts/training/model.h5
+      hash: md5
+      md5: 54d79330585ea35bd9c1132c84581397
+      size: 14884832
+    - path: config/config.yaml
+      hash: md5
+      md5: 28492639089bcb1139ac05dfb5ead26f
+      size: 1225
+    - path: src/violenceReporter/pipeline/stage_05_model_evaluation.py
+      hash: md5
+      md5: f496f81df786dcb4cabfd10d5a529e25
+      size: 916
+    params:
+      params.yaml:
+        BATCH_SIZE: 8
+        CLASSES: 2
+        EPOCHS: 100
+        FREEZE_TILL: -40
+        IMAGE_HEIGHT: 64
+        IMAGE_WIDTH: 64
+        INCLUDE_TOP: false
+        SEQUENCE_LENGTH: 16
+        TEST_SIZE: 0.1
+        TRAINABLE: true
+        WEIGHTS: imagenet
+    outs:
+    - path: artifacts/evaluation
+      hash: md5
+      md5: 12c080abd26b5283391fc7e4a9f076f8.dir
+      size: 87151
+      nfiles: 4
+    - path: scores.json
+      hash: md5
+      md5: 512fc49247c837309e0aef6b1f4a9930
+      size: 73

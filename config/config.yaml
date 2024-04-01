@@ -25,7 +25,7 @@ training:
   model_evaluation_history: artifacts/training/model_evaluation_history.csv
 
 evaluation:
-  root_dir: artifacts/evalution
+  root_dir: artifacts/evaluation
   training_metrics: artifacts/training/model_history.csv
 
 model_prediction:
