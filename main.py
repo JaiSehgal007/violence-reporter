@@ -2,6 +2,7 @@ from violenceReporter import logger
 from violenceReporter.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
 from violenceReporter.pipeline.stage_02_data_transformation import DataTransformationTrainingPipeline
 from violenceReporter.pipeline.stage_03_prepare_base_model import PrepareBaseModelTrainingPipeline
+from violenceReporter.pipeline.stage_04_model_training import ModelTrainingPipeline
 
 
 
@@ -35,6 +36,17 @@ try:
     obj = PrepareBaseModelTrainingPipeline()
     obj.main()
     logger.info(f">>>>>>> stage {STAGE_NAME} completed <<<<<<<\n\nX===================X")
+except Exception as e:
+    logger.exception(e)
+    raise e
+
+STAGE_NAME = "Training"
+try:
+    logger.info(f"*******************")
+    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+    obj = ModelTrainingPipeline()
+    obj.main()
+    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nX================================X")
 except Exception as e:
     logger.exception(e)
     raise e

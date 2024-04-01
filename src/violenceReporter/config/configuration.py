@@ -1,7 +1,7 @@
 import os
 from violenceReporter.constants import *
 from violenceReporter.utils.common import read_yaml,create_directories
-from violenceReporter.entity import DataIngestionConfig,DataTransformationConfig,PrepareBaseModelConfig
+from violenceReporter.entity import DataIngestionConfig,DataTransformationConfig,PrepareBaseModelConfig,TrainingConfig
 class ConfigurationManager:
     def __init__(
             self,
@@ -63,3 +63,30 @@ class ConfigurationManager:
         )
 
         return prepare_base_model_config
+    
+    def get_training_config(self) -> TrainingConfig:
+        training = self.config.training
+        prepare_base_model = self.config.prepare_base_model
+        params = self.params
+        training_data = self.config.data_transformation.root_dir
+        create_directories([
+            Path(training.root_dir)
+        ])
+
+        training_config = TrainingConfig(
+            root_dir=Path(training.root_dir),
+            trained_model_path=Path(training.trained_model_path),
+            updated_base_model_path=Path(prepare_base_model.updated_base_model_path),
+            training_data=Path(training_data),
+            prediction_model_path= Path(training.prediction_model_path),
+            model_checkpoints_path= Path(training.model_checkpoints_path),
+            model_evaluation_history= Path(training.model_evaluation_history),
+            model_history= Path(training.model_history),
+            params_epochs=params.EPOCHS,
+            params_batch_size=params.BATCH_SIZE,
+            params_image_height=params.IMAGE_HEIGHT,
+            params_image_width=params.IMAGE_WIDTH,
+            params_test_size=params.TEST_SIZE
+        )
+
+        return training_config
