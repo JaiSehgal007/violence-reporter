@@ -46,3 +46,12 @@ class TrainingConfig:
     params_image_height: list
     params_image_width: list
     params_test_size: float
+
+@dataclass(frozen=True)
+class EvaluationConfig:
+    root_dir: Path
+    path_of_model: Path
+    training_data: Path
+    training_metrics: Path
+    all_params: dict
+    mlflow_uri: str

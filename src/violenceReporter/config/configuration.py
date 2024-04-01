@@ -1,7 +1,7 @@
 import os
 from violenceReporter.constants import *
 from violenceReporter.utils.common import read_yaml,create_directories
-from violenceReporter.entity import DataIngestionConfig,DataTransformationConfig,PrepareBaseModelConfig,TrainingConfig
+from violenceReporter.entity import DataIngestionConfig,DataTransformationConfig,PrepareBaseModelConfig,TrainingConfig,EvaluationConfig
 class ConfigurationManager:
     def __init__(
             self,
@@ -90,3 +90,18 @@ class ConfigurationManager:
         )
 
         return training_config
+    
+    def get_evaluation_config(self) -> EvaluationConfig:
+        create_directories([
+            Path(self.config.evaluation.root_dir)
+        ])
+
+        eval_config = EvaluationConfig(
+            root_dir=Path(self.config.evaluation.root_dir),
+            path_of_model=Path(self.config.training.trained_model_path),
+            training_metrics=Path(self.config.evaluation.training_metrics),
+            training_data=Path(self.config.data_transformation.root_dir),
+            mlflow_uri=os.environ['MLFLOW_TRACKING_URI'],
+            all_params=self.params,
+        )
+        return eval_config
