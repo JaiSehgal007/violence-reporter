@@ -55,3 +55,12 @@ class EvaluationConfig:
     training_metrics: Path
     all_params: dict
     mlflow_uri: str
+
+@dataclass(frozen=True)
+class PredictionConfig:
+    root_dir: Path
+    model_path: Path
+    classes_list:list
+    params_image_height:int
+    params_image_width:int
+    params_sequence_length:int

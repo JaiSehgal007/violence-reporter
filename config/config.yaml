@@ -27,3 +27,8 @@ training:
 evaluation:
   root_dir: artifacts/evalution
   training_metrics: artifacts/training/model_history.csv
+
+model_prediction:
+  root_dir: artifacts/alert_data
+  prediction_model_path: model/model.h5
+  classes_list: ["NonViolence", "Violence"]

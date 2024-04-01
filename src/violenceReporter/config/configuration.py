@@ -1,7 +1,7 @@
 import os
 from violenceReporter.constants import *
 from violenceReporter.utils.common import read_yaml,create_directories
-from violenceReporter.entity import DataIngestionConfig,DataTransformationConfig,PrepareBaseModelConfig,TrainingConfig,EvaluationConfig
+from violenceReporter.entity import DataIngestionConfig,DataTransformationConfig,PrepareBaseModelConfig,TrainingConfig,EvaluationConfig,PredictionConfig
 class ConfigurationManager:
     def __init__(
             self,
@@ -101,7 +101,23 @@ class ConfigurationManager:
             path_of_model=Path(self.config.training.trained_model_path),
             training_metrics=Path(self.config.evaluation.training_metrics),
             training_data=Path(self.config.data_transformation.root_dir),
-            mlflow_uri=os.environ['MLFLOW_TRACKING_URI'],
+            mlflow_uri="https://dagshub.com/JaiSehgal007/violence-reporter.mlflow",
             all_params=self.params,
+        )
+        return eval_config
+    
+    def get_prediction_config(self) -> PredictionConfig:
+        config=self.config.model_prediction
+        create_directories([
+            Path(config.root_dir)
+        ])
+
+        eval_config = PredictionConfig(
+            root_dir=Path(config.root_dir),
+            model_path=Path(config.prediction_model_path),
+            classes_list=config.classes_list,
+            params_image_height=self.params.IMAGE_HEIGHT,
+            params_image_width=self.params.IMAGE_WIDTH,
+            params_sequence_length=self.params.SEQUENCE_LENGTH
         )
         return eval_config
