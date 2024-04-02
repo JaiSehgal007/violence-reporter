@@ -41,18 +41,66 @@ conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1.0
 pip install -r requirements.txt
 ```
 
+### STEP 03 (optional)- Setting up MLflow
+
+- mlflow ui
+
+#### using dagshub for tracking MLflow files remotely 
+Copy the credentials from the dagshub repository
+
+Run this to export as env variables:
+
 ```bash
-# Finally run the following command
+
+export MLFLOW_TRACKING_URI=<tracking_uri>
+
+export MLFLOW_TRACKING_USERNAME=<user_name>
+
+export MLFLOW_TRACKING_PASSWORD=<password>
+
+```
+
+### STEP 04 (optional)- Setting up DVC pipeline
+
+1. dvc init
+2. dvc repro
+3. dvc dag
+
+
+### STEP 05 - Running all pipelines
+```bash
 python main.py
 ```
 
-3. Obtain API keys for Telegram and Firebase and configure them in the appropriate configuration files.
+### STEP 06 - Running streamlit app
 
-## Usage
+```bash
+streamlit run app.py
+```
 
-1. Run the main.py after installing all the necessary dependencies
+## Requirements for Alert System
 
-2. The system will start monitoring using the primary web camera of your device.
+The prediction model is ready after the above setup, which can be run by 
+
+```bash
+python src/violenceReporter/pipeline/stage_06_model_prediction.py
+```
+but it will not ensure any alert or data bse storage, to configure that set the following environment variables
+
+
+1. ENV Variables
+    - STORAGE_BUCKET = < configure firebase storage to get this >
+    - BOT_TOKEN = < create your telegram bot to get this >
+    - CHAT_ID = < create your telegram bot to get this >
+    - MLFLOW_TRACKING_URI= < create and initalize dagshub repository for your project to get this >
+    - MLFLOW_TRACKING_USERNAME= < create and initalize dagshub repository for your project to get this >
+    - MLFLOW_TRACKING_PASSWORD= < create and initalize dagshub repository for your project to get this >
+
+2. firebaseKey.json
+    get this json file after setting up a firebase project, this can be downloded from
+    - firebase console>settings>service accounts
+    - Click on generate key
+    - store this in the project folder
 
 ## Contributing
 
