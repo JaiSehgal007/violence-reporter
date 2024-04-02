@@ -13,23 +13,94 @@ This repository contains a machine learning project aimed at detecting violence 
 
 - **Location Detection and Reporting**: Integration of location detection to report incidents to the nearest police station.
 
-## Installation
+## How to run?
+### STEPS:
 
-1. Clone the repository:
+Clone the repository
 
 ```bash
-    git clone https://github.com/your-username/violence-detection.git
+    git clone https://github.com/JaiSehgal007/violence-detection.git
 ```
 
-2. Install the required dependencies:
+### STEP 01- Create a conda environment after opening the repository
 
-3. Obtain API keys for Telegram and Firebase and configure them in the appropriate configuration files.
+```bash
+conda create -n reporter python=3.9
+```
 
-## Usage
+```bash
+conda activate reporter
+```
 
-1. Run the ViolenceAlertSystem Jupyter noebook after installing all the necessary dependencies
+```bash
+conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1.0
+```
 
-2. The system will start monitoring using the primary web camera of your device.
+### STEP 02- install the requirements
+```bash
+pip install -r requirements.txt
+```
+
+### STEP 03 (optional)- Setting up MLflow
+
+- mlflow ui
+
+#### using dagshub for tracking MLflow files remotely 
+Copy the credentials from the dagshub repository
+
+Run this to export as env variables:
+
+```bash
+
+export MLFLOW_TRACKING_URI=<tracking_uri>
+
+export MLFLOW_TRACKING_USERNAME=<user_name>
+
+export MLFLOW_TRACKING_PASSWORD=<password>
+
+```
+
+### STEP 04 (optional)- Setting up DVC pipeline
+
+1. dvc init
+2. dvc repro
+3. dvc dag
+
+
+### STEP 05 - Running all pipelines
+```bash
+python main.py
+```
+
+### STEP 06 - Running streamlit app
+
+```bash
+streamlit run app.py
+```
+
+## Requirements for Alert System
+
+The prediction model is ready after the above setup, which can be run by 
+
+```bash
+python src/violenceReporter/pipeline/stage_06_model_prediction.py
+```
+but it will not ensure any alert or data bse storage, to configure that set the following environment variables
+
+
+1. ENV Variables
+    - STORAGE_BUCKET = < configure firebase storage to get this >
+    - BOT_TOKEN = < create your telegram bot to get this >
+    - CHAT_ID = < create your telegram bot to get this >
+    - MLFLOW_TRACKING_URI= < create and initalize dagshub repository for your project to get this >
+    - MLFLOW_TRACKING_USERNAME= < create and initalize dagshub repository for your project to get this >
+    - MLFLOW_TRACKING_PASSWORD= < create and initalize dagshub repository for your project to get this >
+
+2. firebaseKey.json
+    get this json file after setting up a firebase project, this can be downloded from
+    - firebase console>settings>service accounts
+    - Click on generate key
+    - store this in the project folder
 
 ## Contributing
 

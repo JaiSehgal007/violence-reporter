@@ -1,0 +1,27 @@
+opencv-python
+numpy
+tensorflow==2.10
+matplotlib
+seaborn
+scikit-learn
+pytube
+telepot
+Pillow
+mtcnn
+python-dotenv
+firebase-admin
+pandas 
+dvc
+mlflow==2.2.2
+notebook
+python-box==6.0.2
+pyYAML
+tqdm
+ensure==1.0.2
+joblib
+types-PyYAML
+scipy
+streamlit
+streamlit-webrtc
+gdown
+-e .
