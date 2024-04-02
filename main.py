@@ -64,15 +64,3 @@ try:
 except Exception as e:
     logger.exception(e)
     raise e
-
-
-STAGE_NAME = "Prediction"
-try:
-    logger.info(f"*******************")
-    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
-    obj = PredictionPipeline()
-    obj.main()
-    logger.info(f">>>>>> stage {STAGE_NAME} stopped <<<<<<\n\nX================================X")
-except Exception as e:
-    logger.exception(e)
-    raise e

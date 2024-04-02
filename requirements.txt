@@ -22,7 +22,6 @@ joblib
 types-PyYAML
 scipy
 streamlit
+streamlit-webrtc
 gdown
-Flask
-Flask-Cors
 -e .

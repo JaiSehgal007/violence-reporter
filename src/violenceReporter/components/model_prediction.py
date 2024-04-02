@@ -186,6 +186,89 @@ class Prediction:
     def load_model(path: Path) -> tf.keras.Model:
         return tf.keras.models.load_model(path)
     
+
+    def set_app_cred(self):
+        self.model = self.load_model(self.config.model_path)
+        self.set_credentials()
+        self.initialize_database()
+        self.SEQUENCE_LENGTH=self.config.params_sequence_length
+        self.bot = telepot.Bot(self.BOT_TOKEN)
+        self.frames_list = []
+        self.location = "Sector 20, Noida"
+        self.violence_image = os.path.join(self.config.root_dir,"finalImage.jpg")
+        self.face_image = os.path.join(self.config.root_dir,"faces.png")
+        self.no_of_detections, self.alert_sent = 0, 0
+        self.last_alert_time = None
+
+    def app_predict(self,frame):
+        confidence_threshold=0.75
+        normalized_frame = self.preprocess_frame(frame)
+        self.frames_list.append(normalized_frame)
+
+        # Ensure we have enough frames for the sequence
+        predicted_class_name=None
+        if len(self.frames_list) == self.SEQUENCE_LENGTH:
+            # Perform prediction
+            
+            predicted_labels_probabilities = self.model.predict(np.expand_dims(self.frames_list, axis=0),verbose=0)[0]
+            predicted_label = np.argmax(predicted_labels_probabilities)
+            predicted_class_name = self.config.classes_list[predicted_label]
+
+            # Display the prediction
+            confidence = predicted_labels_probabilities[predicted_label]
+
+            # Display "Violence" in red if confidence is above the threshold
+            if predicted_class_name == "Violence" and confidence > confidence_threshold:
+                cv2.putText(frame, "Violence", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+                self.no_of_detections += 1
+
+                if self.no_of_detections >= 7 and self.alert_sent == 0:
+                    current_time = self.get_time()
+                    self.img_enhance(frame)
+                    pixels = plt.imread(self.violence_image)
+                    detector = MTCNN()
+                    faces = detector.detect_faces(pixels)
+                    self.draw_faces(self.violence_image, faces)
+
+                    try:
+                        self.bot.sendMessage(self.CHAT_ID, f"VIOLENCE ALERT!! \n at location: {self.location} \n time: {current_time}")
+                        self.bot.sendPhoto(self.CHAT_ID, photo=open(os.path.join(self.config.root_dir,"finalImage.jpg"), 'rb'))
+                        self.bot.sendMessage(self.CHAT_ID, "Faces Obtained")
+                        self.bot.sendPhoto(self.CHAT_ID, photo=open(os.path.join(self.config.root_dir,"faces.png"), 'rb'))
+
+                        storage_client = storage.bucket()
+                        storage_client.blob(self.violence_image).upload_from_filename(self.violence_image)
+                        storage_client.blob(self.face_image).upload_from_filename(self.face_image)
+
+                        # Get download URLs for the uploaded images
+                        violence_image_url = storage_client.blob(self.violence_image).public_url
+                        face_image_url = storage_client.blob(self.face_image).public_url
+
+                        # Add data to Firestore with download URLs
+                        self.db.collection(self.location).add({
+                            'date': current_time,
+                            'image': violence_image_url,
+                            'faces': face_image_url
+                        })
+                        self.alert_sent = 1
+                        self.last_alert_time = time.time()
+
+                    except Exception as e:
+                        print(f"Error sending elert: {e}")
+
+                    finally:
+                        pass
+
+            # Check if it's been 5 minutes since the last alert
+            if self.last_alert_time is not None and time.time() - self.last_alert_time >= 5 * 60:
+                self.alert_sent = 0
+
+            # Clear the frames list for the next sequence
+            self.frames_list = []
+
+        return predicted_class_name
+
+    
     
     def predict(self):
         self.model = self.load_model(self.config.model_path)
